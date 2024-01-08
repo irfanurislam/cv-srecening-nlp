@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Confirmation</title>
+    <!-- Add your styles if needed -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+    />
+    <style>
+      body {
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        max-width: 600px;
+        background-color: white;
+        margin: 50px auto;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1,
+      p {
+        text-align: center;
+      }
+
+      .skills-list {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="text-3xl mt-3">Upload Confirmation</h1>
+      <p class="text-lg leading-relaxed">
+        File "{{ filename }}" has been successfully uploaded.
+      </p>
+      <div class="grid grid-cols-2 gap-4 mt-4">
+        <div>
+          <p class="font-semibold">Name:</p>
+          <p>{{ name }}</p>
+          <p class="font-semibold">Email:</p>
+          <p>{{ email }}</p>
+        </div>
+        <div>
+          <p class="font-semibold">Skills Match:</p>
+          <p>{{ skills_match | round(2) * 100 }}%</p>
+          {% if recommended_skills %}
+          <div class="skills-list">
+            <p class="font-semibold">Recommended Skills:</p>
+            <ul class="list-disc pl-4">
+              {% for skill in recommended_skills %}
+              <li>{{ skill }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+          {% else %}
+          <p>No recommended skills based on the uploaded CV.</p>
+          {% endif %}
+        </div>
+      </div>
+      <!-- You can add more information or actions as needed -->
+    </div>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.js"></script>
+  </body>
+</html>
