@@ -5,6 +5,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import fitz  # PyMuPDF
 import pandas as pd
+import re
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -81,23 +82,31 @@ def extract_info_and_calculate_match(filepath):
 
     return name, email, cosine_sim, recommended_skills
 
+import re
+
 def extract_text_and_info_from_pdf(filepath):
     text = ""
     name = ""
     email = ""
+
     with fitz.open(filepath) as pdf_document:
         num_pages = pdf_document.page_count
         for page_num in range(num_pages):
             page = pdf_document[page_num]
             text += page.get_text()
-            # Extract name and email (you may need to enhance this based on your specific CV format)
-            if "Name:" in text and "Email:" in text:
-                start_name = text.find("Name:")
-                end_name = text.find("Email:")
-                name = text[start_name + 5:end_name].strip()
-                start_email = text.find("Email:") + 6
-                email = text[start_email:].strip()
+
+    # Use regular expressions to extract name and email
+    name_match = re.search(r'\b(?:Name|Full\s*Name|First\s*Name):\s*([\w\s]+)\b', text, re.IGNORECASE)
+    email_match = re.search(r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b', text)
+
+    if name_match:
+        name = name_match.group(1).strip()
+
+    if email_match:
+        email = email_match.group(0).strip()
+
     return text, name, email
+
 
 def recommend_skills(cosine_sim):
     # Use a simple threshold for illustration
